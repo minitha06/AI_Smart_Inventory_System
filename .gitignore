@@ -1,0 +1,38 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Python Cache
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# React / Vite
+frontend/node_modules/
+frontend/.vite/
+
+# Keep the built frontend
+!frontend/dist/
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary Files
+*.tmp
+*.temp

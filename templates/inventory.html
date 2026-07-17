@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-soft">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-white">Product Management</h1>
+        <p class="mt-2 text-sm text-slate-400">Add, search, edit, and adjust inventory products from one place.</p>
+      </div>
+      <a href="{{ url_for('auth.dashboard') }}" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:border-brand hover:bg-brand/10">
+        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+      </a>
+    </div>
+  </section>
+
+  {% if message %}
+  <div class="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+    <i class="bi bi-check-circle me-2"></i>{{ message }}
+  </div>
+  {% endif %}
+
+  <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-soft">
+    <form method="get" action="{{ url_for('inventory.inventory_dashboard') }}" class="grid gap-3 lg:grid-cols-[1fr_auto]">
+      <div class="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3">
+        <div class="flex items-center gap-3">
+          <i class="bi bi-search text-slate-400"></i>
+          <input type="search" name="search" value="{{ search }}" class="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-500" placeholder="Search by product name, category, SKU, or RFID...">
+        </div>
+      </div>
+      <button type="submit" class="rounded-2xl bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand/90">
+        <i class="bi bi-search me-2"></i>Search
+      </button>
+    </form>
+  </section>
+
+  <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-soft">
+    <div class="mb-4 flex items-center gap-3">
+      <div class="rounded-2xl bg-brand/15 p-3 text-brand"><i class="bi bi-plus-lg"></i></div>
+      <h2 class="text-xl font-semibold text-white">Add New Product</h2>
+    </div>
+    <form method="post" action="{{ url_for('inventory.add_product') }}" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div>
+        <label class="mb-2 block text-sm text-slate-300">SKU *</label>
+        <input type="text" name="sku" class="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-brand" placeholder="SKU001" required>
+      </div>
+      <div>
+        <label class="mb-2 block text-sm text-slate-300">Product Name *</label>
+        <input type="text" name="name" class="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-brand" placeholder="Wireless Mouse" required>
+      </div>
+      <div>
+        <label class="mb-2 block text-sm text-slate-300">Category</label>
+        <input type="text" name="category" class="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-brand" placeholder="Accessories">
+      </div>
+      <div>
+        <label class="mb-2 block text-sm text-slate-300">Price *</label>
+        <div class="flex items-center rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3">
+          <span class="mr-2 text-slate-400">$</span>
+          <input type="number" step="0.01" name="price" class="w-full bg-transparent text-white outline-none" placeholder="0.00" required>
+        </div>
+      </div>
+      <div>
+        <label class="mb-2 block text-sm text-slate-300">Stock *</label>
+        <input type="number" name="stock" class="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-brand" placeholder="0" required>
+      </div>
+      <div>
+        <label class="mb-2 block text-sm text-slate-300">RFID UID</label>
+        <input type="text" name="rfid_uid" class="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-brand" placeholder="RFID-1001">
+      </div>
+      <div class="md:col-span-2 xl:col-span-4">
+        <label class="mb-2 block text-sm text-slate-300">Description</label>
+        <textarea name="description" rows="3" class="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-brand" placeholder="Enter product description..."></textarea>
+      </div>
+      <div class="md:col-span-2 xl:col-span-4 flex flex-wrap justify-end gap-2 pt-1">
+        <button type="reset" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:border-brand hover:bg-brand/10">Clear</button>
+        <button type="submit" class="rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400">Add Product</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-0 shadow-soft">
+    <div class="border-b border-white/10 px-5 py-4">
+      <div class="flex items-center gap-3">
+        <div class="rounded-2xl bg-sky-500/15 p-3 text-sky-300"><i class="bi bi-table"></i></div>
+        <h2 class="text-xl font-semibold text-white">Product Inventory</h2>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-white/10 text-sm text-slate-300">
+        <thead class="bg-white/5 text-slate-400">
+          <tr>
+            <th class="px-4 py-3 text-left">ID</th>
+            <th class="px-4 py-3 text-left">SKU</th>
+            <th class="px-4 py-3 text-left">Product</th>
+            <th class="px-4 py-3 text-left">Category</th>
+            <th class="px-4 py-3 text-right">Price</th>
+            <th class="px-4 py-3 text-center">Stock</th>
+            <th class="px-4 py-3 text-left">RFID UID</th>
+            <th class="px-4 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/10">
+          {% for product in products %}
+          <tr class="hover:bg-white/5">
+            <td class="px-4 py-3 text-slate-400">{{ product.id }}</td>
+            <td class="px-4 py-3"><span class="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-200">{{ product.sku }}</span></td>
+            <td class="px-4 py-3 font-semibold text-white">{{ product.name }}</td>
+            <td class="px-4 py-3">{{ product.category or '-' }}</td>
+            <td class="px-4 py-3 text-right text-emerald-300">${{ '%.2f' | format(product.unit_price) }}</td>
+            <td class="px-4 py-3 text-center">
+              {% if product.stock > 10 %}
+                <span class="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-semibold text-emerald-300">{{ product.stock }}</span>
+              {% elif product.stock > 0 %}
+                <span class="rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-semibold text-amber-300">{{ product.stock }}</span>
+              {% else %}
+                <span class="rounded-full bg-rose-500/15 px-2.5 py-1 text-xs font-semibold text-rose-300">{{ product.stock }}</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-slate-400">{{ product.rfid_uid or '-' }}</td>
+            <td class="px-4 py-3 text-right">
+              <div class="flex justify-end gap-2">
+                <form method="post" action="{{ url_for('inventory.adjust_product_stock', product_id=product.id) }}" class="inline">
+                  <input type="hidden" name="action" value="increase">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="rounded-xl bg-emerald-500/15 px-3 py-2 text-emerald-300" title="Increase stock"><i class="bi bi-plus"></i></button>
+                </form>
+                <form method="post" action="{{ url_for('inventory.adjust_product_stock', product_id=product.id) }}" class="inline">
+                  <input type="hidden" name="action" value="decrease">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="rounded-xl bg-amber-500/15 px-3 py-2 text-amber-300" title="Decrease stock"><i class="bi bi-dash"></i></button>
+                </form>
+                <a href="{{ url_for('inventory.edit_product', product_id=product.id) }}" class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sky-300" title="Edit product"><i class="bi bi-pencil"></i></a>
+                <form method="post" action="{{ url_for('inventory.remove_product', product_id=product.id) }}" class="inline">
+                  <button type="submit" class="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-rose-300" title="Delete product" onclick="return confirm('Are you sure you want to delete this product?');"><i class="bi bi-trash"></i></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="8" class="px-4 py-10 text-center text-slate-400">No products found. Start by adding a new product.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-0 shadow-soft">
+    <div class="border-b border-white/10 px-5 py-4">
+      <div class="flex items-center gap-3">
+        <div class="rounded-2xl bg-amber-500/15 p-3 text-amber-300"><i class="bi bi-clock-history"></i></div>
+        <h2 class="text-xl font-semibold text-white">Recent Inventory Logs</h2>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-white/10 text-sm text-slate-300">
+        <thead class="bg-white/5 text-slate-400">
+          <tr>
+            <th class="px-4 py-3 text-left">Product</th>
+            <th class="px-4 py-3 text-center">Change</th>
+            <th class="px-4 py-3 text-left">Type</th>
+            <th class="px-4 py-3 text-left">Reference</th>
+            <th class="px-4 py-3 text-left">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/10">
+          {% for log in logs %}
+          <tr>
+            <td class="px-4 py-3 font-semibold text-white">{{ log.product_name or 'N/A' }}</td>
+            <td class="px-4 py-3 text-center">
+              {% if log.change_quantity > 0 %}
+                <span class="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-semibold text-emerald-300">+{{ log.change_quantity }}</span>
+              {% else %}
+                <span class="rounded-full bg-rose-500/15 px-2.5 py-1 text-xs font-semibold text-rose-300">{{ log.change_quantity }}</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3"><span class="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-200">{{ log.log_type }}</span></td>
+            <td class="px-4 py-3 text-slate-400">{{ log.reference or '-' }}</td>
+            <td class="px-4 py-3 text-slate-400">{{ log.timestamp }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" class="px-4 py-6 text-center text-slate-400">No log entries available.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  :root {
+    --background: 255, 255, 255;
+    --foreground: 15, 23, 42;
+    --border: 241, 245, 249;
+    --card: 255, 255, 255;
+    --glass: 255, 255, 255;
+  }
+
+  .dark {
+    --background: 11, 15, 26;
+    --foreground: 248, 250, 252;
+    --border: 30, 41, 59;
+    --card: 17, 24, 39;
+    --glass: 17, 24, 39;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased transition-colors duration-200 ease-in-out;
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+  }
+}
+
+/* Glassmorphism Styles */
+.glass-panel {
+  @apply backdrop-blur-md border;
+  background-color: rgba(var(--glass), 0.75);
+  border-color: rgba(var(--border), 0.5);
+}
+
+.glass-card {
+  @apply backdrop-blur-md border rounded-2xl transition-all duration-300;
+  background-color: rgba(var(--glass), 0.5);
+  border-color: rgba(var(--border), 0.4);
+}
+
+.glass-card:hover {
+  @apply shadow-lg border-indigo-500/20 dark:border-indigo-400/20;
+  transform: translateY(-2px);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-700 rounded-full hover:bg-slate-400 dark:hover:bg-slate-600;
+}

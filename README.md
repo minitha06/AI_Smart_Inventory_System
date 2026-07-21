@@ -70,7 +70,7 @@ The application features a modern React frontend, Flask backend, SQLite database
 ## Machine Learning
 
 - Scikit-learn
-- Pandas
+- Linear Regression
 - NumPy
 
 ## Hardware
